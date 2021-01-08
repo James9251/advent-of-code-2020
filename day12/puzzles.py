@@ -54,3 +54,59 @@ for direction in directions:
     x, y, theta = follow_direction_1(x, y, theta, direction)
 manhattan_distance = abs(x) + abs(y)
 print("Puzzle 1 Manhattan distance from starting point = {}".format(manhattan_distance))
+
+def follow_direction_2(ship_x, ship_y, wp_x, wp_y, direction):
+    '''
+    Takes inputs ship_x, ship_y: the ship's coordinates
+    Takes inputs wp_x, wp: the waypoint's coordinates
+    Direction is interpreted as per puzzle 2 instructions
+    Returns the new tuple (x, y, theta)
+    Follows the directions according to the rules in puzzle 1.
+    '''
+    letter, scalar = decode(direction)
+    degrees_to_radians = pi / 180
+    two_pi = 2 * pi
+    cos_s = cos(scalar * degrees_to_radians)
+    sin_s = sin(scalar * degrees_to_radians)
+    # The waypoint's relative position
+    rel_x = wp_x - ship_x
+    rel_y = wp_y - ship_y
+    if letter == 'N':
+        wp_y += scalar
+        return (ship_x, ship_y, wp_x, wp_y)
+    elif letter == 'S':
+        wp_y -= scalar
+        return (ship_x, ship_y, wp_x, wp_y)
+    elif letter == 'E':
+        wp_x += scalar
+        return (ship_x, ship_y, wp_x, wp_y)
+    elif letter == 'W':
+        wp_x -= scalar
+        return (ship_x, ship_y, wp_x, wp_y)
+    elif letter == 'L':
+        wp_x = ship_x + cos_s * rel_x - sin_s * rel_y
+        wp_y = ship_y + sin_s * rel_x + cos_s * rel_y
+        return (ship_x, ship_y, wp_x, wp_y)
+    elif letter == 'R':
+        wp_x = ship_x + cos_s * rel_x + sin_s * rel_y
+        wp_y = ship_y - sin_s * rel_x + cos_s * rel_y
+        return (ship_x, ship_y, wp_x, wp_y)
+    elif letter == 'F':
+        x_displacement = scalar * rel_x
+        y_displacement = scalar * rel_y
+        ship_x += x_displacement
+        ship_y += y_displacement
+        wp_x += x_displacement
+        wp_y += y_displacement
+        return (ship_x, ship_y, wp_x, wp_y)
+    return
+
+# Ship and waypoint starting coordinates    
+ship_x = 0
+ship_y = 0
+wp_x = 10
+wp_y = 1
+for direction in directions:
+    ship_x, ship_y, wp_x, wp_y = follow_direction_2(ship_x, ship_y, wp_x, wp_y, direction)
+manhattan_distance = abs(ship_x) + abs(ship_y)
+print("Puzzle 2 Manhattan distance from starting point = {}".format(manhattan_distance))
